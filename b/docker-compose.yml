@@ -1,0 +1,13 @@
+version: "3.9"
+
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: mysql+pymysql://3DBxzCf2ut68hSV.root:euMNFdipzS4hU1p6@gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com:4000/myapp?ssl_ca=/etc/ssl/cert.pem
+    volumes:
+      - /etc/ssl/cert.pem:/etc/ssl/cert.pem:ro
+    restart: on-failure
