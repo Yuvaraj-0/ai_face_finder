@@ -1,16 +1,16 @@
 from core import db
 from fastapi import UploadFile, HTTPException
-from services.face_service import FaceService
-from models.photo import Imagedb
+from services.face_service import face_service
+from models.photo import Image
 from services.photo_service import PhotoService
-from services.qdrant_service import QdrantService
+from services.qdrant_service import qdrant_service
 from sqlalchemy.orm import Session
 class SearchService:
-
+    
     @staticmethod
     async def process_search(
         file: UploadFile,
-        event_id: int,
+        event_id: str,
         db: Session
     ):
 
@@ -22,9 +22,9 @@ class SearchService:
 
         image_bytes = await file.read()
 
-        image = FaceService.bytes_to_image(image_bytes)
+        image = face_service.bytes_to_image(image_bytes)
 
-        faces = FaceService.detect_faces(image)
+        faces = face_service.detect_faces(image)
 
         if len(faces) == 0:
             raise HTTPException(
@@ -38,9 +38,9 @@ class SearchService:
                 detail="Multiple faces detected"
             )
 
-        embedding = FaceService.generate_embedding(faces[0])
+        embedding = face_service.generate_embedding(faces[0])
 
-        results = QdrantService.search(
+        results = qdrant_service.search(
             embedding=embedding,
             event_id=event_id
         )
@@ -68,7 +68,7 @@ class SearchService:
         for image in images:
             response.append({
                 "image_id": image.id,
-                "image_url": image.image_url,
+                "image_url": image.cloudinary_secure_url, 
                 "score": score_map[image.id]
             })
 

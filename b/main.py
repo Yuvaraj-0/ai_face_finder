@@ -5,12 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.event_router import router as event_router
 from sqlalchemy import text
 from routes.photo import router as photo_router
+from routes.search import router as search_router
 import logging
 from core.redis import redis_client
 from core.qdrant import client
 from routes.auth import router
 from middleware.rate_limit_middleware import rate_limit
-
+from services.qdrant_service import QdrantService
+from core.qdrant import client
 
 # from services.qdrant_service import QdrantService
 
@@ -23,13 +25,13 @@ logger = logging.getLogger("app")
 
 app = FastAPI()
 
-
+QdrantService.create_collection()
 
 
 app.include_router(router)          # Auth routes
 app.include_router(event_router)  
 app.include_router(photo_router)    # Event routes
-
+app.include_router(search_router)    # Search routes
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -40,6 +42,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+print("=====================================",client.get_collection("faces"))
 @app.on_event("startup")
 def startup():
     init_db()

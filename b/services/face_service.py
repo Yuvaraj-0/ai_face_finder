@@ -14,19 +14,11 @@ class FaceService:
             ctx_id=-1,          # CPU
             det_size=(640, 640)
         )
-
-    def detect_faces(self, image_bytes):
-
-        image = np.frombuffer(image_bytes, np.uint8)
-
-        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-
+    def detect_faces(self, image):
         faces = self.app.get(image)
-
         return faces
 
     def generate_embedding(self, face):
-
         return face.embedding.tolist()
 
     @staticmethod
@@ -41,3 +33,5 @@ class FaceService:
             raise ValueError("Invalid image")
 
         return image
+
+face_service = FaceService()

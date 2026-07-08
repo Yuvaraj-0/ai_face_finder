@@ -1,3 +1,4 @@
+from qdrant_client.models import PayloadSchemaType
 from uuid import uuid4
 from qdrant_client.models import Filter, FieldCondition, MatchValue
 from qdrant_client.models import (
@@ -12,6 +13,15 @@ COLLECTION_NAME = "faces"
 
 class QdrantService:
     print(client.get_collections())
+
+    
+    from qdrant_client.models import (
+    PointStruct,
+    Distance,
+    VectorParams,
+    PayloadSchemaType,
+)
+
     @staticmethod
     def create_collection():
 
@@ -29,6 +39,15 @@ class QdrantService:
 
         else:
             print("✅ Qdrant collection already exists")
+
+        # Always ensure the payload index exists
+        client.create_payload_index(
+            collection_name=COLLECTION_NAME,
+            field_name="event_id",
+            field_schema=PayloadSchemaType.KEYWORD,
+        )
+
+    print("✅ event_id payload index created")
     @staticmethod
     def save_embedding(
         image_id: str,
@@ -71,3 +90,4 @@ class QdrantService:
                         ]
                     )
                 )
+qdrant_service = QdrantService()
