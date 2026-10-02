@@ -8,6 +8,6 @@ class Settings:
 
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
     ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp"}
-    MAX_IMAGES_PER_EVENT = 100
+    MAX_IMAGES_PER_EVENT = 150
 
 settings = Settings()

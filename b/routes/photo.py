@@ -136,6 +136,20 @@ async def upload_single_image(
         db.refresh(db_image)
 
         logger.info("Image saved successfully")
+
+        job = {
+            "image_id": db_image.id,
+            "event_id": db_image.event_id,
+            "photographer_id": db_image.photographer_id,
+            "cloudinary_url": db_image.cloudinary_secure_url
+        }
+
+        logger.info("Sending image processing job to Celery")
+        logger.info("Job: %s", job)
+
+        process_uploaded_image.delay(job)
+
+        logger.info("Celery job sent successfully")
         logger.info("=" * 80)
 
         return db_image
